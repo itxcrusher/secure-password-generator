@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Password Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        /* Custom styles for the range slider */
+        input[type="range"] {
+            -webkit-appearance: none; appearance: none;
+            width: 100%; height: 8px;
+            background: #475569; /* slate-600 */
+            border-radius: 5px; outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none;
+            width: 20px; height: 20px;
+            background: #38bdf8; /* sky-400 */
+            cursor: pointer; border-radius: 50%;
+            border: 2px solid #0f172a; /* slate-900 */
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 20px; height: 20px;
+            background: #38bdf8; /* sky-400 */
+            cursor: pointer; border-radius: 50%;
+            border: 2px solid #0f172a; /* slate-900 */
+        }
+        /* Custom checkbox */
+        .custom-checkbox:checked {
+            background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+            background-color: #38bdf8; /* sky-400 */
+            border-color: #0ea5e9; /* sky-500 */
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200 flex flex-col items-center justify-center min-h-screen p-4 antialiased">
+
+    <div class="w-full max-w-lg">
+        <header class="text-center mb-6">
+            <h1 class="text-3xl font-bold text-white">Secure Password Generator</h1>
+            <p class="text-slate-400 mt-2">Create strong, random passwords to protect your accounts.</p>
+        </header>
+
+        <main class="space-y-6">
+            <!-- Password Display -->
+            <div class="relative flex items-center bg-slate-900 p-4 rounded-lg border border-slate-700">
+                <span id="password-display" class="font-mono text-xl text-white flex-grow tracking-wider"></span>
+                <button id="copy-btn" class="text-slate-400 hover:text-white transition-colors" title="Copy Password">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                        <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zM-1 7a.5.5 0 0 1 .5-.5h15a.5.5 0 0 1 0 1H-.5A.5.5 0 0 1-1 7z"/>
+                    </svg>
+                </button>
+                 <span id="copy-feedback" class="absolute -top-6 right-0 text-sm text-emerald-400 transition-opacity duration-300 opacity-0">Copied!</span>
+            </div>
+
+            <!-- Controls -->
+            <div class="bg-slate-800 rounded-xl shadow-2xl border border-slate-700 p-6 space-y-5">
+                <!-- Length Slider -->
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <label for="length-slider" class="font-medium text-slate-300">Password Length</label>
+                        <span id="length-value" class="text-2xl font-mono font-bold text-sky-400">16</span>
+                    </div>
+                    <input type="range" id="length-slider" min="8" max="32" value="16" class="w-full">
+                </div>
+                
+                <!-- Checkboxes -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                    <div class="flex items-center">
+                        <input id="uppercase" type="checkbox" checked class="custom-checkbox w-5 h-5 rounded bg-slate-700 border-slate-600 focus:ring-sky-500">
+                        <label for="uppercase" class="ml-3 text-sm font-medium text-slate-300">Include Uppercase (A-Z)</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input id="lowercase" type="checkbox" checked class="custom-checkbox w-5 h-5 rounded bg-slate-700 border-slate-600 focus:ring-sky-500">
+                        <label for="lowercase" class="ml-3 text-sm font-medium text-slate-300">Include Lowercase (a-z)</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input id="numbers" type="checkbox" checked class="custom-checkbox w-5 h-5 rounded bg-slate-700 border-slate-600 focus:ring-sky-500">
+                        <label for="numbers" class="ml-3 text-sm font-medium text-slate-300">Include Numbers (0-9)</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input id="symbols" type="checkbox" class="custom-checkbox w-5 h-5 rounded bg-slate-700 border-slate-600 focus:ring-sky-500">
+                        <label for="symbols" class="ml-3 text-sm font-medium text-slate-300">Include Symbols (!@#$)</label>
+                    </div>
+                </div>
+                <p id="error-msg" class="text-sm text-red-400 h-4 text-center"></p>
+
+                <!-- Generate Button -->
+                <button id="generate-btn" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-4 rounded-lg transition-colors !mt-8">
+                    Generate Password
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const passwordDisplay = document.getElementById('password-display');
+        const lengthSlider = document.getElementById('length-slider');
+        const lengthValue = document.getElementById('length-value');
+        const uppercaseCheck = document.getElementById('uppercase');
+        const lowercaseCheck = document.getElementById('lowercase');
+        const numbersCheck = document.getElementById('numbers');
+        const symbolsCheck = document.getElementById('symbols');
+        const generateBtn = document.getElementById('generate-btn');
+        const copyBtn = document.getElementById('copy-btn');
+        const copyFeedback = document.getElementById('copy-feedback');
+        const errorMsg = document.getElementById('error-msg');
+
+        const charSets = {
+            uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            lowercase: 'abcdefghijklmnopqrstuvwxyz',
+            numbers: '0123456789',
+            symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+        };
+
+        // Secure random number generator
+        function getRandomInt(max) {
+            // Create a typed array to hold random values
+            const randomValues = new Uint32Array(1);
+            // Fill the array with cryptographically strong random values
+            window.crypto.getRandomValues(randomValues);
+            // Scale the random value to the desired range
+            return randomValues[0] % max;
+        }
+
+        function generatePassword() {
+            const length = lengthSlider.value;
+            let charset = '';
+            let password = '';
+            errorMsg.textContent = '';
+            
+            if (uppercaseCheck.checked) charset += charSets.uppercase;
+            if (lowercaseCheck.checked) charset += charSets.lowercase;
+            if (numbersCheck.checked) charset += charSets.numbers;
+            if (symbolsCheck.checked) charset += charSets.symbols;
+
+            if (charset === '') {
+                errorMsg.textContent = 'Please select at least one character set.';
+                passwordDisplay.textContent = '';
+                return;
+            }
+
+            for (let i = 0; i < length; i++) {
+                const randomIndex = getRandomInt(charset.length);
+                password += charset[randomIndex];
+            }
+
+            passwordDisplay.textContent = password;
+        }
+        
+        function copyPassword() {
+            const password = passwordDisplay.textContent;
+            if (password) {
+                // Use execCommand for broader compatibility in sandboxed environments
+                const textarea = document.createElement('textarea');
+                textarea.value = password;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+
+                copyFeedback.classList.remove('opacity-0');
+                setTimeout(() => {
+                    copyFeedback.classList.add('opacity-0');
+                }, 2000);
+            }
+        }
+
+        // Event Listeners
+        lengthSlider.addEventListener('input', (e) => {
+            lengthValue.textContent = e.target.value;
+        });
+
+        generateBtn.addEventListener('click', generatePassword);
+        copyBtn.addEventListener('click', copyPassword);
+
+        // Initial password generation
+        generatePassword();
+
+    </script>
+</body>
+</html>
+
